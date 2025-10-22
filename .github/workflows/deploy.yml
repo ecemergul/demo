@@ -28,13 +28,6 @@ jobs:
         # Eğer requirements.txt varsa bağımlılıklar yüklenir.
         # Yoksa bu adım hata vermez, ama isteğe göre silebiliriz.
 
-      - name: Zip Lambda function
-        run: |
-          cd lambdas/welcome_function
-          zip -r ../../function.zip .
-        # Lambda fonksiyonu .zip haline getiriliyor.
-        # Bu dosya AWS'ye yüklenecek.
-
       - name: Deploy to AWS Lambda
         uses: aws-actions/aws-lambda-deploy@v1
         with:
