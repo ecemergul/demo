@@ -28,6 +28,7 @@ jobs:
         # Eğer requirements.txt varsa bağımlılıklar yüklenir.
         # Yoksa bu adım hata vermez, ama isteğe göre silebiliriz.
 
+        
       - name: Deploy to AWS Lambda
         uses: aws-actions/aws-lambda-deploy@v1
         with:
