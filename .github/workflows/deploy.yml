@@ -1,28 +1,46 @@
-name: Deploy to AWS Lambda
+name: Deploy Welcome Lambda Function
 
 on:
   push:
     branches:
-      - main
-      - welcome-lambda
+      - welcome-lambda   # Bu branch'e push yapıldığında çalışır
+  workflow_dispatch:      # Manuel olarak “Run workflow” ile çalıştırmak için
 
 jobs:
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # GitHub Actions çalıştırılacağı sanal ortam
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        # Kodun repodan çekiliyor, yani GitHub Actions ortamına indiriliyor.
 
-      - name: Zip Lambda package
-        run: zip -r function.zip .
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+        # Lambda fonksiyonunun yazıldığı Python versiyonu burada ayarlanıyor.
+
+      - name: Install dependencies
+        run: |
+          cd lambdas/welcome_function
+          pip install -r requirements.txt -t .
+        # Eğer requirements.txt varsa bağımlılıklar yüklenir.
+        # Yoksa bu adım hata vermez, ama isteğe göre silebiliriz.
+
+      - name: Zip Lambda function
+        run: |
+          cd lambdas/welcome_function
+          zip -r ../../function.zip .
+        # Lambda fonksiyonu .zip haline getiriliyor.
+        # Bu dosya AWS'ye yüklenecek.
 
       - name: Deploy to AWS Lambda
         uses: aws-actions/aws-lambda-deploy@v1
         with:
-          aws-region: eu-central-1
-          function-name: welcome-lambda
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: eu-central-1               # Frankfurt (örnek)
+          function-name: telescopeWelcome        # Lambda fonksiyonunun adı
           zip-file: function.zip
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        # AWS erişim bilgilerini kullanarak Lambda fonksiyonunu günceller.
