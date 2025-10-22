@@ -27,6 +27,6 @@ jobs:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: eu-central-1               # Frankfurt (örnek)
-          function-name: telescopeWelcome        # Lambda fonksiyonunun adı
+          function-name: welcome-lambda        # Lambda fonksiyonunun adı
           zip-file: function.zip
         # AWS erişim bilgilerini kullanarak Lambda fonksiyonunu günceller.
